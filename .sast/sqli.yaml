@@ -1,0 +1,16 @@
+rules:
+  - id: tainted-python-sqli
+    languages: [python]
+    severity: ERROR
+    message: User-controlled data from a request is passed to db.execute
+    mode: taint
+    pattern-sinks:
+      - patterns:
+        - pattern: $QUERY
+        - pattern-inside: $DB.execute(...,$QUERY,...)
+    pattern-sources:
+      - patterns:
+        - pattern: $ARG
+        - pattern-inside: |
+            def $HANDLER(...,$ARG,...):
+              ...
